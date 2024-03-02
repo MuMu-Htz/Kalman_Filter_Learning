@@ -235,7 +235,7 @@ $v_k$为 测量噪音 $Measurement~Noice$
 
 <div class="center">
 
-step1.先验估计 $~~~~~~~~~~~\hat{x}^{-}_k=A\hat{x}^{-}_{k-1}+Bu_{k-1}$
+step1.先验估计 $~~~~~~~~~~~\hat{x}^{-}_k=A\hat{x}_{k-1}+Bu_{k-1}$
 
 step2.先验误差协方差 $P^{-}_k=AP_{k-1}A^T+Q$
 

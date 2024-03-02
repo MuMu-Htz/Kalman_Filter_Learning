@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<opencv_storage>
+
+<value_list_size>5</value_list_size>
+
+<value_w1>1.0</value_w1>
+<value_w2>1.0</value_w2>
+
+<value_v1>1.0</value_v1>
+<value_v2>1.0</value_v2>
+
+<x0_00>1</x0_00>
+<x0_01>1</x0_01>
+<x0_10>1</x0_10>
+<x0_11>1</x0_11>
+
+<P0_00>1</P0_00>
+<P0_01>1</P0_01>
+<P0_10>1</P0_10>
+<P0_11>1</P0_11>
+
+</opencv_storage>
