@@ -1,7 +1,6 @@
 #include <iostream>
 #include "KalmanFilter.hpp"
 
-
 KalmanFilter::KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, int n /* = 2*/)
 {
     this->resize_Mat_(n); //类型选择
@@ -130,6 +129,11 @@ void KalmanFilter::update(Eigen::VectorXd Vec_z, Eigen::VectorXd & Vec_hatx_k_)
     this->update_error_covariance();
 }
 
+/**
+ * @brief 初始化Q矩阵的函数 主要用于外部更改private中的成员函数
+ * @param nums 将数据以vector形式的输入
+ * @return none
+*/
 void KalmanFilter::init_Mat_Q(std::vector<double> nums)
 {
     int rows = this->Mat_Q_.rows();
@@ -148,6 +152,11 @@ void KalmanFilter::init_Mat_Q(std::vector<double> nums)
     }
 }
 
+/**
+ * @brief 初始化R矩阵的函数 主要用于外部更改private中的成员函数
+ * @param nums 将数据以vector形式的输入
+ * @return none
+*/
 void KalmanFilter::init_Mat_R(std::vector<double> nums)
 {
     int rows = this->Mat_R_.rows();
