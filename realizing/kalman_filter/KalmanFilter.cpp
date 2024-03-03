@@ -2,25 +2,13 @@
 #include "KalmanFilter.hpp"
 
 
-KalmanFilter::KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, int n = 2)
+KalmanFilter::KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, int n /* = 2*/)
 {
     this->resize_Mat_(n); //类型选择
     this->init_Mat_2(); //矩阵元素初始化
 
     this->Vec_hatx_k_before_ = Vec_x0;
     this->Mat_P_k_1_ = Mat_P0;
-
-}
-KalmanFilter::KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, std::vector<double> num_w, std::vector<double> num_v, int n = 2)
-{
-    this->resize_Mat_(n); //类型选择
-    this->init_Mat_2(); //矩阵元素初始化
-
-    this->Vec_hatx_k_before_ = Vec_x0;
-    this->Mat_P_k_1_ = Mat_P0;
-
-    this->init_Mat_Q(num_w);
-    this->init_Mat_R(num_v);
 
 }
 KalmanFilter::~KalmanFilter()
@@ -65,10 +53,10 @@ void KalmanFilter::resize_Mat_(int n)
     this->Mat_Q_.resize(n, n);
     this->Mat_R_.resize(n ,n);
 
-    this->Vec_hatx_k_1_.resize(1, n);
-    this->Vec_hatx_k_.resize(1, n);
-    this->Vec_hatx_k_before_.resize(1, n);
-    this->Vec_Z_k_.resize(1, n);
+    this->Vec_hatx_k_1_.resize(n);
+    this->Vec_hatx_k_.resize(n);
+    this->Vec_hatx_k_before_.resize(n);
+    this->Vec_Z_k_.resize(n);
 }
 
 /**
@@ -114,7 +102,7 @@ Eigen::VectorXd KalmanFilter::posterior_estimates(Eigen::VectorXd Vec_Z)
     this->Vec_hatx_k_ = this->Vec_hatx_k_before_ + this->Mat_Kk_ * (Vec_Z - this->Mat_H_ * this->Vec_hatx_k_before_);
 
     this->Vec_hatx_k_1_ = this->Vec_hatx_k_; //更新hatx{k-1}
-
+    return Vec_hatx_k_;
 }
 
 /**
@@ -144,17 +132,37 @@ void KalmanFilter::update(Eigen::VectorXd Vec_z, Eigen::VectorXd & Vec_hatx_k_)
 
 void KalmanFilter::init_Mat_Q(std::vector<double> nums)
 {
-    for(int i = 0; i < nums.size(); i++)
+    int rows = this->Mat_Q_.rows();
+    int cols = this->Mat_Q_.cols();
+    if(nums.size() != rows * cols)
     {
-        this->Mat_Q_ << nums[i];
+        std::cout << "Error: The size of the vector does not match the size of the matrix!\n";
+        return;
+    }
+    for(int i = 0; i < rows; ++i)
+    {
+        for(int j = 0; j < cols; ++j)
+        {
+            this->Mat_Q_(i, j) = nums[i * cols + j];
+        }
     }
 }
 
 void KalmanFilter::init_Mat_R(std::vector<double> nums)
 {
-    for(int i = 0; i < nums.size(); i++)
+    int rows = this->Mat_R_.rows();
+    int cols = this->Mat_R_.cols();
+    if(nums.size() != rows * cols)
     {
-        this->Mat_R_ << nums[i];
+        std::cout << "Error: The size of the vector does not match the size of the matrix!\n";
+        return;
+    }
+    for(int i = 0; i < rows; ++i)
+    {
+        for(int j = 0; j < cols; ++j)
+        {
+            this->Mat_R_(i, j) = nums[i * cols + j];
+        }
     }
 }
 

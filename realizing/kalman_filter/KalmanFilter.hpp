@@ -32,16 +32,15 @@ void priori_error_covariance();
 void kalman_gain();
 Eigen::VectorXd posterior_estimates(Eigen::VectorXd Vec_z);
 void update_error_covariance();
-void init_Mat_R(std::vector<double> nums);
-void init_Mat_Q(std::vector<double> nums);
+
 
 
 public:
 
 KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, int n = 2);
-KalmanFilter(Eigen::VectorXd Vec_x0, Eigen::MatrixXd Mat_P0, std::vector<double> num_w, std::vector<double> num_v, int n = 2);
 ~KalmanFilter();
 void update(Eigen::VectorXd Vec_z, Eigen::VectorXd & Vec_hatx_k_);
-
+void init_Mat_R(std::vector<double> nums);
+void init_Mat_Q(std::vector<double> nums);
 };
 

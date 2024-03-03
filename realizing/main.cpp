@@ -17,18 +17,12 @@ std::mt19937 gen(rd());
 
 double x = 0.0;
 double v = 2.0;
-double real_x_actual = 0.0;
-double real_v_actual = 0.0;
 
 double w1, w2, v1, v2;
 int list_size = 0;
 double x0[4] = {0};
 double P0[4] = {0};
 
-std::normal_distribution<>dis_w1(0.0, w1);
-std::normal_distribution<>dis_w2(0.0, w2);
-std::normal_distribution<>dis_v1(0.0, v1);
-std::normal_distribution<>dis_v2(0.0, v2); 
 
 Eigen::Vector2d Vec_x0;
 Eigen::Matrix2d Mat_P0;
@@ -61,8 +55,11 @@ void init_param()
               P0[2], P0[3];
 }
 
-void update_real()
+void update_real(double w1, double v1)
 {
+    std::normal_distribution<>dis_w1(0.0, w1);
+    std::normal_distribution<>dis_v1(0.0, v1);
+
     double real_rd_x = dis_w1(gen);
     double real_rd_v = dis_v1(gen);
     double temp_v = v;
@@ -71,9 +68,6 @@ void update_real()
     v += real_rd_v;
     x = x + v + real_rd_x;
 
-    real_x_actual = x;
-    real_v_actual = v;
-
     real_x.push_back(x);
     real_v.push_back(v);
 
@@ -81,8 +75,11 @@ void update_real()
     x = temp_x;
 }
 
-void update_measurement()
+void update_measurement(double w2, double v2)
 {
+    std::normal_distribution<>dis_w2(0.0, w2);
+    std::normal_distribution<>dis_v2(0.0, v2); 
+
     double meas_rd_x = dis_w2(gen);
     double meas_rd_v = dis_v2(gen);
     double temp_v = v;
@@ -114,21 +111,56 @@ int main()
     R_v.push_back(v1*v2);
     R_v.push_back(v2*v1);
     R_v.push_back(v2*v2);
-    //KalmanFilter KF(Vec_x0, Mat_P0, Q_sigma, R_v);
     KalmanFilter KF(Vec_x0, Mat_P0);
+
+    KF.init_Mat_Q(Q_sigma);
+    KF.init_Mat_R(R_v);
     Eigen::VectorXd Vec_hatx;
     for(int i = 0; i < list_size; i++)
     {
-        update_real();
-        update_measurement();
+        update_real(w1,v1);
+        update_measurement(w2,v2);
         KF.update(Vec_Z, Vec_hatx);
         filtered_x.push_back(Vec_hatx(0));
         filtered_v.push_back(Vec_hatx(1));
+        x += v;
 
-        x = real_x_actual;
-        v = real_v_actual;
     }
 
-    std::cout << "near the success";
-    
+    std::cout << "real_x: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << real_x[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "real_v: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << real_v[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "measurement_x: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << measurement_x[i] << " "; 
+    }
+    std::cout << std::endl;
+    std::cout << "measurement_v: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << measurement_v[i] << " "; 
+    }
+    std::cout << std::endl;
+    std::cout << "filtered_x: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << filtered_x[i] << " "; 
+    }
+    std::cout << std::endl;
+    std::cout << "filtered_v: ";
+    for(int i = 0; i < list_size; i++)
+    {
+        std::cout << filtered_v[i] << " "; 
+    }
+    std::cout << std::endl;
 }

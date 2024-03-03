@@ -9,7 +9,6 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIRS})
 aux_source_directory(KalmanFilter KalmanFilter_src)
 
+add_executable(Out main.cpp ${KalmanFilter_src} kalman_filter/KalmanFilter.cpp)
 
-add_executable(Out main.cpp ${KalmanFilter_src})
-
-target_link_libraries(Out ${OpenCV_LIBS})
+target_link_libraries(Out ${OpenCV_LIBS} Eigen3::Eigen)
